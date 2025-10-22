@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% block title %}Productos en alerta de stock{% endblock %}
+
+{% load static %}
+{% block content %}
+{% block nav_visible %}{% endblock %}
+  <nav class="navbar navbar-light bg-success py-2">
+    <div class="container d-flex justify-content-center">
+      <a class="navbar-brand" href="/">
+        <img src="{% static 'imgs/fotologo/fotosambilito.png' %}" alt="Logo Sambilito" style="height: 50px;">
+      </a>
+    </div>
+  </nav>
+<div class="container-fluid px-4 py-3">
+
+<div class="container py-4">
+  <div class="bg-white p-4 rounded shadow-sm">
+
+    <!-- 🛒 Título principal -->
+    <h2 class="text-center mb-4">🛒 Productos en alerta de stock</h2>
+
+    <!-- ❌ Sin stock -->
+    <div class="mb-5">
+      <h4 class="text-danger">Sin stock</h4>
+      {% if sin_stock %}
+        <div class="table-responsive">
+          <table class="table table-bordered table-striped text-center align-middle">
+            <thead class="table-light">
+              <tr>
+                <th>Nombre</th>
+                <th>Categoría</th>
+                <th>Foto</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for producto in sin_stock %}
+              <tr>
+                <td>{{ producto.nombre_empleado }}</td>
+                <td>{{ producto.categoria.nombre }}</td>
+                <td>
+                  {% if producto.foto_empleado %}
+                    <img src="{{ producto.foto_empleado.url }}" alt="Foto" style="height: 60px;" class="rounded">
+                  {% else %}
+                    <span class="text-muted">Sin imagen</span>
+                  {% endif %}
+                </td>
+                <td>
+                  <a class="btn btn-success btn-sm" href="{% url 'view_form_update_empleado' producto.id %}">
+                    <i class="bi bi-pencil-square"></i> Editar
+                  </a>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <p class="text-muted">Todos los productos tienen al menos una unidad disponible.</p>
+      {% endif %}
+    </div>
+
+    <!-- ⚠️ Bajo stock -->
+    <div>
+      <h4 class="text-warning">Solo quedan 5 unidades o menos</h4>
+      {% if bajo_stock %}
+        <div class="table-responsive">
+          <table class="table table-bordered table-hover text-center align-middle">
+            <thead class="table-light">
+              <tr>
+                <th>Nombre</th>
+                <th>Categoría</th>
+                <th>Stock actual</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for producto in bajo_stock %}
+              <tr>
+                <td>{{ producto.nombre_empleado }}</td>
+                <td>{{ producto.categoria.nombre }}</td>
+                <td>{{ producto.edad_empleado }}</td>
+                <td>
+                  <a class="btn btn-success btn-sm" href="{% url 'view_form_update_empleado' producto.id %}">
+                    <i class="bi bi-pencil-square"></i> Editar
+                  </a>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <p class="text-muted">No hay productos con bajo stock en este momento.</p>
+      {% endif %}
+    </div>
+
+    <!-- 🔙 Botón de regreso -->
+    <div class="text-center mt-4">
+      <a href="{% url 'historial_general_compras' %}" class="btn btn-secondary">
+        ← Volver al historial de compras
+      </a>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

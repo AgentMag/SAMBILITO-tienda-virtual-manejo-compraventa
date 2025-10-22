@@ -1,0 +1,886 @@
+{% extends 'base.html' %}
+<!---->
+{% block title %}SAMBIILITO{% endblock %}
+<!---->
+{%block content %} {% load static %}
+<!-- Tu CSS personalizado -->
+  <style>
+    .descripcion-limitada {
+  max-height: 3.6em; /* aprox. 2 líneas */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* número de líneas */
+  -webkit-box-orient: vertical;
+}
+
+    .modal-backdrop.show {
+      backdrop-filter: blur(5px);
+      background-color: rgba(0, 0, 0, 0.3);
+    }
+
+    .custom-modal-content {
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.2);
+
+    }  
+
+    #carrito-btn {
+      position: fixed;
+      bottom: 20px; /* Lo coloca en la parte inferior */
+      right: 20px;  /* Lo mantiene en la parte derecha */
+      z-index: 1000;
+      background-color: #0059ff;
+      color: white;
+      padding: 10px 15px;
+      border-radius: 50px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      cursor: pointer;
+    }
+    
+    /* btones de agregar y descargar */
+.floating-buttons {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: inline-flex;
+  background-color: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  z-index: 1000;
+}
+
+.btn-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  font-size: 1.8rem;
+  color: #14ad47;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+
+.btn-icon:hover {
+  background-color: #e6f9ec;
+}
+
+
+
+
+
+
+    /* carrusel*/
+    .carousel-bg {
+      height: 300px;
+      background-size: cover;
+      background-position: center;
+      position: relative;
+    }
+
+    .carousel-caption {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: rgba(0, 0, 0, 0.5); /* fondo oscuro semitransparente */
+      padding: 10px 20px;
+      border-radius: 10px;
+      color: #fff;
+    }
+
+    .carousel-item {
+      transition: transform 0.8s ease-in-out;
+    }
+
+    .carousel-control-prev,
+    .carousel-control-next {
+      width: 50px;
+      height: 50px;
+      background-color: white;
+      border-radius: 50%;
+      top: 50%;
+      transform: translateY(-50%);
+      opacity: 0.8;
+      transition: opacity 0.3s ease;
+    }
+
+    .carousel-control-prev:hover,
+    .carousel-control-next:hover {
+      opacity: 1;
+    }
+
+    .carousel-control-prev-icon,
+    .carousel-control-next-icon {
+      background-size: 60% 60%;
+      background-position: center;
+      background-repeat: no-repeat;
+      filter: invert(1); /* Hace que el ícono se vea oscuro sobre fondo blanco */
+    }
+
+    /*estilos de las cards*/
+    .botones-empleado {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    
+    .card {
+      border: none;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      background-color: #fff;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    }
+
+    .card img.foto_empleado {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-top-left-radius: 15px;
+      border-top-right-radius: 15px;
+    }
+
+    .card-body h5 {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .card-body p {
+      color: #666;
+      margin-bottom: 10px;
+    }
+
+    .card-body .btn {
+      margin: 5px 3px;
+    }
+
+    /* Contenedor del carrito */
+    .carrito-lateral {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(to bottom, #f8f9fa, #ffffff);
+      padding: 20px;
+      position: fixed;
+      top: 0;
+      right: -400px; /* oculto por defecto */
+      width: 400px;
+      height: 100%;
+      background: #fff;
+      box-shadow: -2px 0 8px rgba(0,0,0,0.1);
+      transition: right 0.3s;
+      z-index: 1050;
+      overflow-y: auto;
+    }
+    .carrito-lateral.visible {
+          right: 0; /* se muestra */
+        }
+    /* Botón de cerrar */
+    .carrito-lateral button.btn-danger {
+      position: static;
+      margin-bottom: 10px;
+      display: block;
+      margin-left: auto;
+    }
+
+    /* Tabla de productos */
+    .table-bordered th,
+    .table-bordered td {
+      border: none;
+      padding: 12px;
+      vertical-align: middle;
+    }
+
+    .table thead th {
+      background-color: #343a40;
+      color: #fff;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .table tbody tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+
+    /* Total destacado */
+    .table tbody tr:last-child th {
+      background-color: #ffc107;
+      color: #000;
+      font-size: 16px;
+    }
+
+    /* Botones de acción */
+   .carrito-lateral .btn-danger,
+    .carrito-lateral .btn-success {
+      width: 100%;
+      padding: 10px;
+      font-size: 14px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      transition: transform 0.2s ease;
+    }
+
+    .carrito-lateral .btn-danger,
+    .carrito-lateral .btn-success {
+      transform: scale(1.05);
+    }
+
+    /* Espaciado entre botones */
+    .row.text-center .col-6 {
+      padding: 10px;
+    }
+
+/* Tasa flotante */ 
+#tasa-flotante { 
+  position: fixed; 
+  top: 10px; left: 10px; 
+  background-color:rgba(255, 255, 255, 0.95); 
+  padding: 10px 20px; 
+  border-radius: 8px; 
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
+  z-index: 9999; 
+  font-size: 18px;
+  color: #333; 
+  opacity: 0; 
+  visibility: hidden;
+   transition: opacity 0.2s ease, visibility 0.2s ease;
+
+   }
+   
+   #tasa-flotante.visible { 
+    opacity: 1; 
+    visibility: visible; 
+  }
+  </style>
+
+
+<div class="row justify-content-center">
+  <div class="col-md-12 mb-2">
+    <h2 class="text-center text-uppercase">
+      
+      Resultados de búsqueda para "{{ query }}":
+     <hr>
+    </h2>
+  </div>
+</div>
+
+
+
+
+
+<div id="tasa-flotante">
+  {% if tasa %}
+    <h4>Tasa actual bcv: {{ tasa }}</h4>
+  {% else %}
+    <h4>No se pudo obtener la tasa actual.</h4>
+  {% endif %}
+</div>
+
+{% if not request.user.is_staff %}
+<button  id="carrito-btn" onclick="mostrarCarrito()">🛒 Ver carrito</button>
+{% endif %}
+
+
+<script>
+document.getElementById('guardar-compra-btn').addEventListener('click', function () {
+  const modal = new bootstrap.Modal(document.getElementById('metodoPagoModal'));
+  modal.show();
+});
+
+function seleccionarMetodo(metodo) {
+  console.log("Método seleccionado:", metodo);
+  // Aquí puedes cerrar el modal automáticamente si quieres:
+  const modal = bootstrap.Modal.getInstance(document.getElementById('metodoPagoModal'));
+  modal.hide();
+}
+
+function mostrarCarrito() {
+  document.getElementById('carrito-lateral').classList.add('visible');
+}
+function ocultarCarrito() {
+  document.getElementById('carrito-lateral').classList.remove('visible');
+}
+
+ 
+  
+
+</script>
+
+<script>
+  function seleccionarMetodo(metodo) {
+    if (metodo === 'pago_movil') {
+      window.location.href = '/pago-movil/';
+    } else if (metodo === 'efectivo') {
+      // Puedes redirigir a otra vista o simplemente cerrar el modal
+      // Por ejemplo:
+      document.getElementById('metodoPagoModal').classList.remove('show');
+      document.body.classList.remove('modal-open');
+      document.querySelector('.modal-backdrop').remove();
+    }
+  }
+
+</script>
+
+  <div class="container mt-4">
+  <div class="row gx-1">
+
+
+    {% for empleado in resultados %} 
+      <div class="col-sm-6 col-md-3 mb-3 d-flex">
+
+
+        <div class="card" style="width: 15rem; padding: 6px;">
+
+          <img class="foto_empleado"
+            src="{{ empleado.foto_empleado.url }}"
+            alt="Foto de {{ empleado.nombre_empleado }}" />
+          <div class="card-body text-center">
+            <h5>
+              <a href="{% url 'detalles_empleado' empleado.id %}" class="text-decoration-none text-dark">
+                {{ empleado.nombre_empleado }}
+              </a>
+            </h5>
+
+            <p class="descripcion-limitada">{{ empleado.apellido_empleado }}</p>
+
+            <h5 class="text-success">US${{ empleado.salario_empleado }}</h5>
+
+            <div class="botones-empleado">
+              {% csrf_token %}  
+             
+
+              {% if request.user.is_superuser %}
+                <a class="btn btn-success" href="{% url 'view_form_update_empleado' empleado.id %}">
+                  <i class="bi bi-pencil-square"></i>
+                </a>
+                {% csrf_token %}
+                <button class="btn btn-warning" onclick="borrarEmpleado('{{ empleado.id }}')">
+                  <i class="bi bi-trash"></i>
+                </button>
+              {% endif %}
+              {% if not request.user.is_staff %}
+              <button class="btn btn-primary" onclick="agregarAlCarrito('{{ empleado.id }}')">
+                Agregar al carrito
+              </button>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+ 
+
+
+ {% endblock %}
+<!---->
+{% block customJS %}
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+  async function borrarEmpleado(idEmpleado) {
+    const confirmation = confirm("¿Estás seguro que deseas desactivar este producto?");
+
+    if (confirmation) {
+      try {
+        const csrfToken = "{{ csrf_token|escapejs }}";
+
+        const response = await axios({
+          method: "post",
+          url: "/eliminar-empleado/",
+          data: { idEmpleado },
+          headers: {
+            "X-CSRFToken": csrfToken,
+          },
+        });
+
+        console.log(response.data);
+        if (response.data.resultado === 1) {
+          alerta("El producto fue desactivado correctamente 😏", 1);
+          location.reload(); // recarga para aplicar el filtro activo=True
+        } else {
+          alerta("Hubo un error al desactivar el producto 😓", 0);
+        }
+      } catch (error) {
+        console.error("Error al realizar la solicitud:", error);
+        alerta("Error de conexión al intentar desactivar 😵", 0);
+      }
+    }
+  }
+
+  function alerta(msj, tipo_msj) {
+    const divExistente = document.querySelector(".alert");
+    if (divExistente) {
+      divExistente.remove();
+    }
+
+    const divRespuesta = document.createElement("div");
+    divRespuesta.classList.add("col-md-11");
+
+    divRespuesta.innerHTML = `
+      <div class="alert ${
+        tipo_msj == 1 ? "alert-success" : "alert-danger"
+      } alert-dismissible text-center" role="alert">
+        ${msj}
+      </div>
+    `;
+
+    setTimeout(() => {
+      divRespuesta.innerHTML = "";
+    }, 8000);
+
+    const container = document.querySelector(".row");
+    container.insertAdjacentElement("beforeend", divRespuesta);
+  }
+</script>
+
+
+
+{% include 'empleado/carrito.html' %}
+
+
+<!-- Modal -->
+<div class="modal fade" id="metodoPagoModal" tabindex="-1" aria-labelledby="metodoPagoLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content custom-modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="metodoPagoLabel">Seleccione método de pago</h5>
+        <button type="button" class="btn-close" onclick="cerrarTodosLosModales()"></button> 
+      </div>
+      <div class="modal-body text-center">
+        <button class="btn btn-primary me-2" onclick="seleccionarMetodo('efectivo')">Efectivo</button>
+        <button onclick="abrirModalDos()" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalOpciones">
+          Pago móvil
+        </button>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal pago movil-->
+<div class="modal fade" id="modalOpciones" tabindex="-1" aria-labelledby="modalOpcionesLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content text-center">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalOpcionesLabel">Selecciona una opción</h5>
+        <button type="button" class="btn-close" onclick="cerrarTodosLosModales()"></button>
+      </div>
+      <div class="modal-body">
+        <!-- Opciones iniciales -->
+        <button class="btn btn-outline-success m-2" onclick="seleccionarOpcion('delivery')">🚚 Delivery</button>
+        <button class="btn btn-outline-info m-2" onclick="seleccionarOpcion('tienda')">🏬 Buscar en tienda</button>
+
+        <!-- Select de zonas -->
+        <div id="zonaSelectContainer" class="mt-4" style="display: none;">
+          <label for="zonaSelect" class="form-label">¿Dónde vives?</label>
+          <select class="form-select" id="zonaSelect" onchange="verificarZona()">
+            <option selected disabled>Selecciona tu zona</option>
+            <option value="zona1">Zona 1</option>
+            <option value="zona2">Zona 2</option>
+            <option value="zona3">Zona 3</option>
+            <option value="ninguna">No vivo en ninguna de las opciones</option>
+          </select>
+        </div>
+
+        <!-- Alerta si no vive en ninguna zona -->
+        <div id="alertaZona" class="alert alert-warning mt-3" role="alert" style="display: none;">
+          Lo sentimos, el delivery solo se encuentra disponible para las opciones dadas.
+        </div>
+        <!-- Botón para realizar pago móvil -->
+       
+        <div id="btnPagoMovilContainer" class="mt-3" style="display: none;">
+          <button class="btn btn-primary" onclick="redirigirAPagoMovil()">💳 Realizar pago móvil</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal efectivo-->
+<div class="modal fade" id="modalEfectivo" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content text-center">
+      <div class="modal-header">
+        <h5 class="modal-title">Opciones para efectivo</h5>
+        <button type="button" class="btn-close" onclick="cerrarTodosLosModales()"></button>
+      </div>
+      <div class="modal-body">
+                <!-- Opciones iniciales -->
+        <button class="btn btn-outline-success m-2" onclick="seleccionarOpcionEfectivo('delivery')">🚚 Delivery</button>
+        <button class="btn btn-outline-info m-2" onclick="seleccionarOpcionEfectivo('tienda')">🏬 Buscar en tienda</button>
+
+        <!-- Select de zonas -->
+        <div id="zonaSelectContainerEfectivo" class="mt-4" style="display: none;">
+          <label for="zonaSelectEfectivo" class="form-label">¿Dónde vives?</label>
+          <select class="form-select" id="zonaSelectEfectivo" onchange="verificarZonaEfectivo()">
+            <option selected disabled>Selecciona tu zona</option>
+            <option value="zona1">Zona 1</option>
+            <option value="zona2">Zona 2</option>
+            <option value="zona3">Zona 3</option>
+            <option value="ninguna">No vivo en ninguna de las opciones</option>
+          </select>
+        </div>
+
+        <!-- Alerta -->
+        <div id="alertaZonaEfectivo" class="alert alert-warning mt-3" role="alert" style="display: none;">
+          Lo sentimos, el delivery solo se encuentra disponible para las opciones dadas.
+        </div>
+
+        <!-- Botón de pago móvil -->
+        <div id="btnPagoMovilContainerEfectivo" class="mt-3" style="display: none;">
+          <button class="btn btn-primary" onclick="redirigirAEfectivo()">confirmar pedido</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+<script>
+document.addEventListener('DOMContentLoaded', activarBotonesCarrito);
+
+function activarBotonesCarrito() {
+  document.querySelectorAll('.sumar-btn').forEach(btn => {
+    btn.onclick = () => {
+      const key = btn.closest('[data-key]').dataset.key;
+      actualizarCarritoJson(key, 'sumar');
+    };
+  });
+
+  document.querySelectorAll('.restar-btn').forEach(btn => {
+    btn.onclick = () => {
+      const key = btn.closest('[data-key]').dataset.key;
+      actualizarCarritoJson(key, 'restar');
+    };
+  });
+
+  document.querySelectorAll('.eliminar-btn').forEach(btn => {
+    btn.onclick = () => {
+      const key = btn.closest('[data-key]').dataset.key;
+      actualizarCarritoJson(key, 'eliminar');
+    };
+  });
+}
+
+function actualizarCarritoJson(key, accion) {
+  fetch(`/carrito/${accion}/${key}/`, {
+    method: 'POST',
+    headers: {
+      'X-CSRFToken': getCookie('csrftoken'),
+      'X-Requested-With': 'XMLHttpRequest'
+    },
+    body: JSON.stringify({}) // si no pasas datos, está bien
+  })
+  .then(response => {
+    if (!response.ok) throw new Error('Network response was not ok');
+    return response.json();
+  })
+  .then(data => {
+    if (data.error) {
+      console.error('Error backend:', data.error);
+      return;
+    }
+    document.getElementById('carrito-contenido').innerHTML = data.html;
+    activarBotonesCarrito();
+  })
+  .catch(err => console.error('Error al actualizar carrito:', err));
+}
+
+function agregarAlCarrito(empleadoId) {
+  fetch(`/agregar-producto/${empleadoId}/`, {
+    method: 'GET',
+    headers: {
+      'X-Requested-With': 'XMLHttpRequest'
+    }
+  })
+  .then(response => {
+    return response.json().then(data => {
+      if (!response.ok) {
+        alert(data.error || "Error al agregar producto.");
+        throw new Error(data.error);
+      }
+      return data;
+    });
+  })
+  .then(data => {
+    document.getElementById('carrito-contenido').innerHTML = data.html;
+    document.getElementById('carrito-lateral').classList.add('visible');
+    activarBotonesCarrito();
+  })
+  .catch(error => {
+    console.error("Error al actualizar el carrito:", error);
+  });
+}
+
+
+function getCookie(name) {
+  let cookieValue = null;
+  if (document.cookie && document.cookie !== '') {
+    const cookies = document.cookie.split(';');
+    for (let cookie of cookies) {
+      cookie = cookie.trim();
+      if (cookie.startsWith(name + '=')) {
+        cookieValue = decodeURIComponent(cookie.slice(name.length + 1));
+        break;
+      }
+    }
+  }
+  return cookieValue;
+}
+
+
+
+
+
+
+function redirigirAPagoMovil() {
+  window.location.href = '/pago-movil/';
+}
+
+function redirigirAEfectivo() {
+  window.location.href = '/efectivo/';
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+  const btnGuardar = document.getElementById('guardar-compra-btn');
+  btnGuardar.addEventListener('click', function () {
+    const modal = new bootstrap.Modal(document.getElementById('metodoPagoModal'));
+    modal.show();
+  });
+});
+
+function abrirModalEfectivo() {
+  const modalUno = bootstrap.Modal.getInstance(document.getElementById('metodoPagoModal'));
+  modalUno.hide();
+  setTimeout(() => {
+    const modalEfectivo = new bootstrap.Modal(document.getElementById('modalEfectivo'));
+    modalEfectivo.show();
+  }, 300);
+}
+
+function abrirModalMovil() {
+  // Cierra el modal actual (metodoPagoModal)
+  const modalActual = bootstrap.Modal.getInstance(document.getElementById('metodoPagoModal'));
+  if (modalActual) {
+    modalActual.hide();
+  }
+
+  // Espera un momento para evitar conflicto visual
+  setTimeout(() => {
+    const modalMovil = new bootstrap.Modal(document.getElementById('modalOpciones'));
+    modalMovil.show();
+  }, 300); // 300ms para que el backdrop se limpie
+}
+
+
+
+function seleccionarOpcion(opcion) {
+  const zonaSelectContainer = document.getElementById('zonaSelectContainer');
+  const alertaZona = document.getElementById('alertaZona');
+  const btnPagoMovilContainer = document.getElementById('btnPagoMovilContainer');
+  const pagoMovilContainer = document.getElementById('pagoMovilContainer');
+  const modal = bootstrap.Modal.getInstance(document.getElementById('modalOpciones'));
+
+  localStorage.setItem('metodo_entrega', opcion); // Guardamos la opción para usarla luego
+
+  if (opcion === 'delivery') {
+    zonaSelectContainer.style.display = 'block';
+    btnPagoMovilContainer.style.display = 'none';
+    pagoMovilContainer.style.display = 'block';
+  } else if (opcion === 'tienda') {
+    zonaSelectContainer.style.display = 'none';
+    alertaZona.style.display = 'none';
+    btnPagoMovilContainer.style.display = 'block';
+    pagoMovilContainer.style.display = 'block';
+    // No cerramos el modal, dejamos que el usuario vea el botón
+  }
+}
+  function verificarZona() {
+  const zonaSelect = document.getElementById('zonaSelect');
+  const alertaZona = document.getElementById('alertaZona');
+  const btnPagoMovilContainer = document.getElementById('btnPagoMovilContainer');
+  const modal = bootstrap.Modal.getInstance(document.getElementById('modalOpciones'));
+
+  if (zonaSelect.value === 'ninguna') {
+    alertaZona.style.display = 'block';
+    btnPagoMovilContainer.style.display = 'none';
+
+    setTimeout(() => {
+      modal.hide();
+      alertaZona.style.display = 'none';
+      zonaSelect.value = "Selecciona tu zona";
+    }, 3000);
+  } else {
+    alertaZona.style.display = 'none';
+    btnPagoMovilContainer.style.display = 'block';
+  }
+}
+
+  function respuestaPago(respuesta) {
+    console.log("Respuesta de pago móvil:", respuesta);
+    // Aquí puedes agregar lógica adicional según la respuesta
+    const modal = bootstrap.Modal.getInstance(document.getElementById('modalOpciones'));
+    modal.hide();
+  }
+  function abrirModalDos() {
+  const modalUno = bootstrap.Modal.getInstance(document.getElementById('metodoPagoModal'));
+  if (modalUno) {
+    modalUno.hide(); // Cierra el modal de método de pago
+  }
+
+  const modalDos = new bootstrap.Modal(document.getElementById('modalOpciones'));
+  modalDos.show(); // Abre el modal de opciones
+}
+
+function realizarPagoMovil() {
+  console.log("El usuario desea realizar el pago móvil.");
+  // Aquí puedes redirigir, abrir otro modal, mostrar instrucciones, etc.
+  alert("Ahora puedes realizar tu pago móvil. Gracias por tu compra.");
+  const modal = bootstrap.Modal.getInstance(document.getElementById('modalOpciones'));
+  modal.hide();
+  
+}
+
+// Función para manejar la selección del método de pago
+function seleccionarMetodo(metodo) {
+  if (metodo === 'efectivo') {
+    const modal1 = bootstrap.Modal.getInstance(document.getElementById('metodoPagoModal'));
+    modal1.hide();
+
+    // Esperamos a que el primer modal se cierre antes de abrir el segundo
+    document.getElementById('metodoPagoModal').addEventListener('hidden.bs.modal', () => {
+      const modal2 = new bootstrap.Modal(document.getElementById('modalEfectivo'));
+      modal2.show();
+    }, { once: true }); // Solo una vez para evitar duplicaciones
+  }
+
+  // Puedes agregar lógica para otros métodos si lo necesitas
+}
+
+function seleccionarOpcionEfectivo(opcion) {
+  const zonaContainer = document.getElementById('zonaSelectContainerEfectivo');
+  const alertaZona = document.getElementById('alertaZonaEfectivo');
+  const btnPagoMovil = document.getElementById('btnPagoMovilContainerEfectivo');
+
+  if (opcion === 'delivery') {
+    localStorage.setItem("metodo_entrega", "Delivery");
+    zonaContainer.style.display = 'block';        
+    alertaZona.style.display = 'none';
+    btnPagoMovil.style.display = 'none';
+  } else if (opcion === 'tienda') {
+    localStorage.setItem("metodo_entrega", "Buscar en tienda");
+    zonaContainer.style.display = 'none';
+    alertaZona.style.display = 'none';
+    btnPagoMovil.style.display = 'block';
+  }
+}
+
+
+function verificarZonaEfectivo() {
+  const zonaSelect = document.getElementById('zonaSelectEfectivo');
+  const alertaZona = document.getElementById('alertaZonaEfectivo');
+  const btnPagoMovilContainer = document.getElementById('btnPagoMovilContainerEfectivo');
+  const modal = bootstrap.Modal.getInstance(document.getElementById('modalEfectivo'));
+
+  if (zonaSelect.value === 'ninguna') {
+    alertaZona.style.display = 'block';
+    btnPagoMovilContainer.style.display = 'none';
+
+    setTimeout(() => {
+      modal.hide();
+      alertaZona.style.display = 'none';
+      zonaSelect.value = "Selecciona tu zona";
+    }, 3000);
+  } else {
+    alertaZona.style.display = 'none';
+    btnPagoMovilContainer.style.display = 'block';
+  }
+}
+
+
+document.addEventListener('DOMContentLoaded', function() {
+  const guardarBtn = document.getElementById('guardar-compra-btn');
+  if (guardarBtn) {
+    guardarBtn.addEventListener('click', function (e) {
+      e.preventDefault(); // Evita el submit si está dentro de un form
+      const modal = new bootstrap.Modal(document.getElementById('metodoPagoModal'));
+      modal.show();
+    });
+  }
+});
+
+document.getElementById('modalOpciones').addEventListener('hidden.bs.modal', function () {
+  document.body.classList.remove('modal-open');
+  document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+});
+
+
+document.addEventListener('DOMContentLoaded', function() {
+  document.body.addEventListener('click', function(e) {
+    // Si el botón "Guardar compra" fue clickeado
+    if (e.target && e.target.id === 'guardar-compra-btn') {
+      e.preventDefault();
+      const modal = new bootstrap.Modal(document.getElementById('metodoPagoModal'));
+      modal.show();
+    }
+  });
+});
+
+
+
+
+function cerrarTodosLosModales() {
+  // Oculta todos los modales visibles
+  document.querySelectorAll('.modal.show').forEach(modal => {
+    const instancia = bootstrap.Modal.getInstance(modal);
+    if (instancia) instancia.hide();
+  });
+
+  // Espera a que todos se cierren visualmente
+  setTimeout(() => {
+    document.body.classList.remove('modal-open');
+    document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+    document.body.style.overflow = 'auto';
+    document.body.style.paddingRight = '';
+  }, 300); // Ajusta el tiempo si usas animaciones más largas
+}
+
+
+// Mostrar u ocultar la tasa flotante al hacer scroll
+document.addEventListener('DOMContentLoaded', function () {
+  const tasaFlotante = document.getElementById('tasa-flotante');
+  if (!tasaFlotante) return;
+
+  window.addEventListener('scroll', function () {
+    const scrollPos = window.scrollY || window.pageYOffset;
+    if (scrollPos > 400) {
+      tasaFlotante.classList.add('visible');
+    } else {
+      tasaFlotante.classList.remove('visible');
+    }
+  });
+});
+
+</script>
+
+
+
+
+
+{% endblock %}
+

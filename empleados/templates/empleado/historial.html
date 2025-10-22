@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+<!---->
+{% block title %}SAMBIILITO{% endblock %}
+<!---->
+{%block content %} {% load static %}
+
+
+<div class="container" style="max-width: 800px;padding: 30px">
+
+  <h2 class="mb-4 text-primary fw-bold">
+    <i class="bi bi-bag-check me-2"></i> Tu Historial de Compras
+  </h2>
+
+  <form method="get" class="mb-4 p-3 bg-light rounded shadow-sm d-flex flex-wrap gap-2 align-items-center justify-content-start">
+    <select name="month" class="form-select" style="max-width: 180px;">
+      <option value="">Todos los meses</option>
+      {% for numero, nombre in meses %}
+        <option value="{{ numero }}" {% if selected_month == numero %}selected{% endif %}>{{ nombre }}</option>
+      {% endfor %}
+    </select>
+    <button type="submit" class="btn btn-primary">Filtrar</button>
+    {% if selected_month %}
+      <a href="{% url 'historial_compras' %}" class="btn btn-secondary ms-2">Ver todos</a>
+    {% endif %}
+  </form>
+
+  <div class="row row-cols-1 g-3">
+    {% for pedido in pedidos %}
+      <div class="col">
+        <div class="card shadow-sm border-0">
+          <div class="card-body">
+            <span class="text-muted small">{{ pedido.fecha|date:"d M Y H:i" }}</span><br>
+            <strong class="d-block mb-2">Operación: {{ pedido.codigo }}</strong>
+            <p class="mb-1">Total: ${{ pedido.monto_usd }} / {{ pedido.monto_bs }} Bs</p>
+            <p class="mb-1">Método de pago: {{ pedido.get_metodo_pago_display }}</p>
+            <p class="mb-1">Entrega: {{ pedido.metodo_entrega }}</p>
+            <p class="mb-1">Productos:</p>
+            <ul class="mb-0">
+              {% for item in pedido.items.all %}
+                <li>{{ item.producto.nombre_empleado }} x{{ item.cantidad }} - ${{ item.subtotal }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+      </div>
+    {% empty %}
+      <div class="col text-center text-muted">No tienes compras registradas.</div>
+    {% endfor %}
+  </div>
+
+</div>
+
+
+
+
+
+{% endblock %}

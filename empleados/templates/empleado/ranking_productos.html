@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Ranking de productos más vendidos{% endblock %}
+
+{% load static %}
+{% block content %}
+{% block nav_visible %}{% endblock %}
+  <nav class="navbar navbar-light bg-success py-2">
+    <div class="container d-flex justify-content-center">
+      <a class="navbar-brand" href="/">
+        <img src="{% static 'imgs/fotologo/fotosambilito.png' %}" alt="Logo Sambilito" style="height: 50px;">
+      </a>
+    </div>
+  </nav>
+<div class="container-fluid px-4 py-3">
+
+<div class="container py-4">
+  <div class="bg-white p-4 rounded shadow-sm">
+
+    <!-- 🏆 Título -->
+    <h2 class="text-center text-success mb-4">📊 Ranking de productos más vendidos</h2>
+
+    <!-- 📋 Tabla de ranking -->
+    <div class="table-responsive mb-4">
+      <table class="table table-bordered table-hover text-center align-middle">
+        <thead class="table-success">
+          <tr>
+            <th>#</th>
+            <th>Producto</th>
+            <th>Cantidad Vendida</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for producto in ranking %}
+          <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ producto.producto__nombre_empleado }}</td>
+            <td>{{ producto.total_vendido }}</td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="3" class="text-center text-muted">No hay datos de ventas aún.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 🔙 Botón de regreso -->
+    <div class="text-center">
+      <a href="{% url 'historial_general_compras' %}" class="btn btn-secondary">
+        ← Volver al historial
+      </a>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

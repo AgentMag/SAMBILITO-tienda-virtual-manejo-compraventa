@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+<!---->
+{% block title %}Registrar Empleado{% endblock %}
+<!---->
+{% load static %}
+{% block content %}
+{% block nav_visible %}{% endblock %}
+<nav class="navbar navbar-light bg-success py-2">
+  <div class="container d-flex justify-content-center">
+    <a class="navbar-brand" href="/">
+      <img src="{% static 'imgs/fotologo/fotosambilito.png' %}" alt="Logo Sambilito" style="height: 50px;">
+    </a>
+  </div>
+</nav>
+<div class="container">
+  <div class="bg-white rounded-4 shadow p-4">
+<div class="container my-5">
+  <div class="bg-white rounded-4 ">
+  <div class="text-center mb-5">
+ 
+    <h4 class="card-title text-center mb-4 fw-bold">🧾 Detalles del Pedido</h4>
+
+    <!-- 🛒 Productos del Carrito -->
+   <div class="mb-5">
+  <div class="mx-auto" style="max-width: 700px;">
+    <h5 class="fw-semibold mb-3 text-center">Productos</h5>
+    {% if request.session.carrito %}
+      <ul class="list-group">
+        {% for key, item in request.session.carrito.items %}
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            {{ item.nombre }} x{{ item.cantidad }}
+            <span class="badge bg-primary rounded-pill">${{ item.acumulado }}</span>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="text-muted text-center">Tu carrito está vacío.</p>
+    {% endif %}
+  </div>
+</div>
+
+    <!-- 💳 Resumen de Pago -->
+    <div class="mb-5">
+      <h5 class="fw-semibold mb-3">Resumen de Pago</h5>
+      <div class="row text-center">
+        <div class="col-md-4 mb-3">
+          <div class="border rounded py-3 bg-light">
+            <h6 class="text-muted">💵 Total en dólares</h6>
+            <p class="fs-4 fw-semibold text-success">${{ pago_Movil.monto }}</p>
+          </div>
+        </div>
+        <div class="col-md-4 mb-3">
+          <div class="border rounded py-3 bg-light">
+            <h6 class="text-muted">🔄 Tasa actual</h6>
+            <p class="fs-4 fw-semibold text-warning">{{ tasa }}</p>
+          </div>
+        </div>
+        <div class="col-md-4 mb-3">
+          <div class="border rounded py-3 bg-light">
+            <h6 class="text-muted">💴 Total en bolívares</h6>
+            <p class="fs-4 fw-semibold text-danger">{{ total_ves }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+  <div class="mb-5">
+    <h5 class="fw-semibold mb-3 text-center">Confirmar Pedido</h5>
+    <div class="mx-auto" style="max-width: 400px;">
+      <form id="whatsapp-form" onsubmit="enviarPedidoEfectivo(event)">
+        {% csrf_token %}
+        <div class="d-grid">
+          <button type="submit" class="btn btn-success btn-lg">Enviar pedido</button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+  </div>
+</div>
+</div>
+</div>
+{% block separador_footer %}{% endblock %}
+
+
+{% endblock %}

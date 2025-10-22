@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  
+  <meta charset="UTF-8">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      font-size: 12px;
+      color: #333;
+      padding: 20px;
+    }
+    .factura-box {
+      border: 1px solid #ccc;
+      padding: 20px;
+      border-radius: 6px;
+    }
+    .encabezado {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .encabezado h2 {
+      margin: 0;
+      color: #2c3e50;
+    }
+    .datos-cliente, .resumen-pago {
+      margin-bottom: 20px;
+    }
+    .datos-cliente p, .resumen-pago p {
+      margin: 4px 0;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+    table th, table td {
+      border: 1px solid #ccc;
+      padding: 6px;
+      text-align: left;
+    }
+    table th {
+      background-color: #f2f2f2;
+    }
+    .total {
+      font-weight: bold;
+      color: #27ae60;
+    }
+    .footer {
+      text-align: center;
+      font-size: 11px;
+      color: #888;
+      margin-top: 30px;
+    }
+  </style>
+</head>
+<body>
+  {% load static %}
+
+<div class="encabezado" style="text-align: center; font-size: 12px; line-height: 1; margin: 0; padding: 0;">
+ <img src="{{ logo_path }}" alt="Logo de la tienda" style="height: 60px; margin-bottom: 6px; display: block; margin-left: auto; margin-right: auto;">
+
+
+
+  <div style="margin: 0; padding: 0;">
+    <strong style="display: block; font-size: 13px; margin: 0;">TIENDA EL SAMBILITO</strong>
+    <span style="display: block; margin: 0;">RIF: 11506828-4</span>
+    <span style="display: block; margin: 0;">sector La Colmena</span>
+    <span style="display: block; margin: 0;">Estado Táchira – Zona Postal 5001</span>
+    <span style="display: block; margin: 0;">+58 424 772 6393</span>
+  </div>
+</div>
+
+
+
+
+
+
+
+  <div class="factura-box">
+    <div class="encabezado">
+      <h2>Factura de Pedido</h2>
+      <p>Generado el {{ fecha }}</p>
+    </div>
+
+    <div class="datos-cliente">
+      <h4>Datos del Cliente</h4>
+      <p><strong>Nombre:</strong> {{ usuario }}</p>
+      <p><strong>Número de operación:</strong> {{ codigo }}</p>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Producto</th>
+          <th>Cantidad</th>
+          <th>Subtotal ($)</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for key, item in carrito.items %}
+        <tr>
+          <td>{{ item.nombre }}</td>
+          <td>{{ item.cantidad }}</td>
+          <td>{{ item.acumulado }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <div class="resumen-pago">
+      <h4>Resumen de Pago</h4>
+      <p><strong>Total en dólares:</strong> <span class="total">${{ pago_Movil.monto }}</span></p>
+      <p><strong>Tasa de cambio:</strong> {{ tasa }}</p>
+      <p><strong>Total en bolívares:</strong> <span class="total">{{ total_ves }} Bs</span></p>
+    </div>
+
+    <div class="footer">
+      Gracias por tu compra. Este documento fue generado automáticamente y no requiere firma.
+    </div>
+  </div>
+
+</body>
+</html>
+
+
+
+  

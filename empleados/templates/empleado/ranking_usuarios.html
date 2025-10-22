@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Usuarios que más han comprado{% endblock %}
+
+{% load static %}
+{% block content %}
+{% block nav_visible %}{% endblock %}
+  <nav class="navbar navbar-light bg-success py-2">
+    <div class="container d-flex justify-content-center">
+      <a class="navbar-brand" href="/">
+        <img src="{% static 'imgs/fotologo/fotosambilito.png' %}" alt="Logo Sambilito" style="height: 50px;">
+      </a>
+    </div>
+  </nav>
+<div class="container-fluid px-4 py-3">
+
+<div class="container py-4">
+  <div class="bg-white p-4 rounded shadow-sm">
+
+    <!-- 🧑‍💼 Título -->
+    <h2 class="text-center mb-4">Usuarios que más han comprado</h2>
+
+    <!-- 📋 Tabla de usuarios -->
+    <div class="table-responsive mb-4">
+      <table class="table table-striped table-bordered text-center align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>Usuario</th>
+            <th>Total Comprado (USD)</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for u in usuarios %}
+          <tr>
+            <td>{{ u.username }}</td>
+            <td>${{ u.total_compras|floatformat:2 }}</td>
+            <td>
+              <a href="{% url 'compras_por_usuario' u.id %}" class="btn btn-sm btn-outline-primary">
+                Ver compras
+              </a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 🔙 Botón de regreso -->
+    <div class="text-center">
+      <a href="{% url 'historial_general_compras' %}" class="btn btn-secondary">
+        ← Volver al historial
+      </a>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

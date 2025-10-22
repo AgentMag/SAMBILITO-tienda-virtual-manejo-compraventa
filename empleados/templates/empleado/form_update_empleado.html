@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+<!---->
+{% block title %}Actualizar Datos del Empleado{% endblock %}
+<!---->
+
+{% load static %}
+{% block content %}
+{% block nav_visible %}{% endblock %}
+<nav class="navbar navbar-light bg-success py-2">
+  <div class="container d-flex justify-content-center">
+    <a class="navbar-brand" href="/">
+      <img src="{% static 'imgs/fotologo/fotosambilito.png' %}" alt="Logo Sambilito" style="height: 50px;">
+    </a>
+  </div>
+</nav>
+
+
+<div class="container px-4 py-5">
+  <div class="bg-white shadow rounded-4 p-5">
+    <div class="row justify-content-center mb-4">
+      <div class="col-md-10">
+        <h1 class="text-center text-uppercase fw-bold">
+          Actualización del Producto
+          <a href="{% url 'listar_empleados' %}" class="float-end text-primary" title="Volver al listado">
+            <i class="bi bi-arrow-left-circle fs-4"></i>
+          </a>
+        </h1>
+        <hr />
+      </div>
+    </div>
+
+    <form name="form_empleado" method="POST" action="{% url 'actualizar_empleado' empleado.id %}" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="row g-4 justify-content-center">
+
+        <div class="col-md-6">
+          <label for="nombre_empleado" class="form-label">Nombre del producto</label>
+          <input type="text" name="nombre_empleado" value="{{ empleado.nombre_empleado }}" class="form-control" required />
+        </div>
+
+        <div class="col-md-6">
+          <label for="apellido_empleado" class="form-label">Especificación</label>
+          <input type="text" name="apellido_empleado" value="{{ empleado.apellido_empleado }}" class="form-control" required />
+        </div>
+
+        <div class="col-md-6">
+          <label for="categoria" class="form-label">Categoría</label>
+          <select name="categoria" class="form-select" required>
+            <option value="">Selecciona una categoría</option>
+            {% for categoria in categorias %}
+              <option value="{{ categoria.id }}" {% if empleado.categoria.id == categoria.id %}selected{% endif %}>{{ categoria.nombre }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="col-md-6">
+          <label for="edad_empleado" class="form-label">Cantidad disponible</label>
+          <input type="text" name="edad_empleado" value="{{ empleado.edad_empleado }}" class="form-control" required />
+        </div>
+
+        <div class="col-md-6">
+          <label for="salario_empleado" class="form-label">Precio</label>
+          <input type="text" name="salario_empleado" value="{{ empleado.salario_empleado }}" class="form-control" required />
+        </div>
+
+        <div class="col-md-6">
+          <label for="foto_empleado" class="form-label">Cargar nueva foto</label>
+          <input type="file" name="foto_empleado" class="form-control" />
+        </div>
+
+        <div class="col-md-6 text-center">
+          <label class="form-label">Foto actual</label><br>
+          {% if empleado.foto_empleado %}
+            {% if empleado.es_extension_valida %}
+              <img src="{{ empleado.foto_empleado.url }}" alt="Foto de {{ empleado.nombre_empleado }}" class="img-fluid rounded" style="max-height: 150px;">
+            {% else %}
+              <img src="{% static 'imgs/empleado_defaul.jpg' %}" alt="Sin foto" class="img-fluid rounded" style="max-height: 150px;">
+            {% endif %}
+          {% endif %}
+        </div>
+
+        <div class="col-md-8 text-center mt-4">
+          <button class="btn btn-warning btn-lg w-100" type="submit">
+            Actualizar Producto <i class="bi bi-pencil-square ms-1"></i>
+          </button>
+        </div>
+
+      </div>
+    </form>
+  </div>
+</div>
+
+
+{% endblock %}

@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<style>
+    .carousel-caption {
+  background-color: rgba(0, 0, 0, 0.6); /* fondo negro con 60% de opacidad */
+  padding: 1rem;
+  border-radius: 0.5rem;
+}
+
+</style>
+    
+
+
+<section id="historia-tienda" class="container py-5">
+  <div class="row">
+    <div class="col-md-10 mx-auto">
+      <div class="card shadow-sm border-0">
+        <div class="card-body">
+          <!-- Título -->
+          <h2 class="card-title text-center mb-4">Nuestra Historia</h2>
+
+          <!-- Texto narrativo -->
+          <p class="text-justify">
+            En el año 2013, Venezuela enfrentó una profunda crisis que provocó escasez de insumos esenciales: alimentos, productos de aseo personal, medicamentos y artículos para lactantes y adultos mayores.
+          </p>
+          <p class="text-justify">
+            Durante ese tiempo, las familias debían hacer largas colas en supermercados, muchas veces regresando con las manos vacías. Fue en medio de esa dificultad que nació una idea transformadora.
+          </p>
+          <p class="text-justify">
+            Una noche, mientras atendíamos un pequeño puesto de pinchos en casa, unos vecinos comentaron: <em>“¿Por qué no compran un bulto de harina y arroz para vender aquí mismo?”</em>. Esa sugerencia encendió la chispa que dio vida a <strong>EL SAMBILITO</strong>, una pequeña pero gran quincalla.
+          </p>
+          <p class="text-justify">
+            Desde entonces, hemos crecido con esfuerzo y compromiso. Hoy ofrecemos una amplia variedad de productos: víveres, verduras, artículos de limpieza, medicamentos básicos, papelería y más.
+          </p>
+
+          <!-- Carrusel -->
+          <div id="carrusel-sambilito" class="carousel slide mb-5 overflow-hidden rounded" data-bs-ride="carousel" data-bs-interval="4000">
+            <div class="carousel-inner">
+              <div class="carousel-item active">
+                <img src="{% static 'imgs/carrusel_tienda/tienda1.jpg' %}" class="d-block w-100" style="max-height: 500px; object-fit: cover;" alt="Fachada del Sambilito">
+                <div class="carousel-caption d-none d-md-block" style="background-color: rgba(0, 0, 0, 0.6); padding: 1rem; border-radius: 0.5rem;">
+                  <h5>Inicio humilde</h5>
+                  <p>Así comenzó todo, desde un puesto de pinchos en casa.</p>
+                </div>
+              </div>
+              <div class="carousel-item">
+                <img src="{% static 'imgs/carrusel_tienda/tienda2.jpeg' %}" class="d-block w-100" style="max-height: 500px; object-fit: cover;" alt="Productos en estantería">
+                <div class="carousel-caption d-none d-md-block" style="background-color: rgba(0, 0, 0, 0.6); padding: 1rem; border-radius: 0.5rem;">
+                  <h5>Productos variados</h5>
+                  <p>Desde víveres hasta papelería, todo en un solo lugar.</p>
+                </div>
+              </div>
+              <div class="carousel-item">
+                <img src="{% static 'imgs/carrusel_tienda/tienda4.jpeg' %}" class="d-block w-100" style="max-height: 500px; object-fit: cover;" alt="Atención al cliente">
+                <div class="carousel-caption d-none d-md-block" style="background-color: rgba(0, 0, 0, 0.6); padding: 1rem; border-radius: 0.5rem;">
+                  <h5>Atención cercana</h5>
+                  <p>El Sr. Tobias y la Sra. María siempre listos para ayudar.</p>
+                </div>
+              </div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carrusel-sambilito" data-bs-slide="prev">
+              <span class="carousel-control-prev-icon"></span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carrusel-sambilito" data-bs-slide="next">
+              <span class="carousel-control-next-icon"></span>
+            </button>
+          </div>
+
+          <!-- Ubicación -->
+          <div class="mt-4">
+            <h5 class="fw-bold">¿Dónde encontrarnos?</h5>
+            <p>
+              📍 Vía principal de El Junco, más arriba del ambulatorio, frente a la posada <strong>Doña Cecilia</strong><br>
+              👥 Atendido con cariño por el Sr. Tobias y la Sra. María
+            </p>
+          </div>
+
+          <div class="mt-5">
+            <h5 class="fw-bold text-center">¿Dónde estamos?</h5>
+            <p class="text-center">Encuéntranos en la vía principal de El Junco, frente a la posada Doña Cecilia.</p>
+            <div class="ratio ratio-16x9 rounded shadow-sm">
+              <iframe 
+              
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d247.0405593385701!2d-72.18118066629255!3d7.826929324615022!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e666d20501f3aaf%3A0xfdb5df67f28f959c!2sel%20sambilito!5e0!3m2!1ses-419!2sve!4v1759784536686!5m2!1ses-419!2sve" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+
+              </iframe>
+                
+            </div>
+          </div>
+
+
+
+          <!-- Contacto -->
+          <div class="text-center mt-5">
+            <h3 class="mb-3">¿Necesitas ayuda?</h3>
+            <p class="lead">Estamos aquí para ayudarte con cualquier duda o necesidad. ¡Contáctanos con confianza!</p>
+            <a href="https://wa.me/584247726393" class="btn btn-success">
+              Escríbenos por WhatsApp <i class="bi bi-whatsapp ms-2"></i>
+            </a>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+
+
+
+{% endblock %}

@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}¿Cómo comprar en EL SAMBILITO?{% endblock %}
+{% block content %}
+
+<style>
+.carousel-inner img {
+  height: 400px; /* ajusta según tu diseño */
+  object-fit: cover;
+}
+</style>
+
+
+
+
+<div class="container py-5">
+  <div class="bg-white p-4 rounded shadow-sm">
+
+   
+
+    <!-- 🛒 Pasos para comprar -->
+    <h2 class="text-center mb-4">🛒 ¿Cómo comprar en EL SAMBILITO?</h2>
+    <p class="lead text-center">Sigue estos pasos sencillos para hacer tu compra desde la comodidad de tu casa:</p>
+
+    <div class="row mt-4">
+      <div class="col-md-6 mb-4">
+        <h5>1️⃣ Explora los productos</h5>
+        <p>Desde la página de inicio, navega por las categorías o usa la barra de búsqueda para encontrar lo que necesitas.</p>
+      </div>
+      <div class="col-md-6 mb-4">
+        <h5>2️⃣ Revisa la información</h5>
+        <p>Haz clic en “Ver más” para conocer la descripción, origen y detalles del producto.</p>
+      </div>
+      <div class="col-md-6 mb-4">
+        <h5>3️⃣ Agrega al carrito</h5>
+        <p>Haz clic en “Agregar al carrito” para guardar tus productos. Puedes ver tu carrito flotante en todo momento.</p>
+      </div>
+      <div class="col-md-6 mb-4">
+        <h5>4️⃣ Revisa tu compra</h5>
+        <p>Haz clic en el carrito para ver el resumen, modificar cantidades o eliminar productos.</p>
+      </div>
+      <div class="col-md-6 mb-4">
+        <h5>5️⃣ Inicia sesión</h5>
+        <p>Para finalizar tu compra, inicia sesión o crea una cuenta si aún no tienes una.</p>
+      </div>
+      <div class="col-md-6 mb-4">
+        <h5>6️⃣ Finaliza tu pedido</h5>
+        <p>Confirma tu compra y elige el método de pago. ¡Nosotros nos encargamos del resto!</p>
+      </div>
+    </div>
+
+ <!-- 🖼️ Carrusel introductorio -->
+    <div id="ayudaCarousel1" class="carousel slide mb-5" data-bs-ride="carousel">
+      <div class="carousel-inner rounded">
+        <div class="carousel-item active">
+          <img src="{% static 'imgs/carrusel_ayuda/Captura.PNG' %}" class="d-block w-100" alt="Explora productos">
+        </div>
+        <div class="carousel-item">
+          <img src="{% static 'imgs/carrusel_ayuda/Captura2.PNG' %}" class="d-block w-100" alt="Agrega al carrito">
+        </div>
+        <div class="carousel-item">
+          <img src="{% static 'imgs/carrusel_ayuda/Captura3.PNG' %}" class="d-block w-100" alt="Finaliza tu compra">
+        </div>
+      </div>
+      <button class="carousel-control-prev" type="button" data-bs-target="#ayudaCarousel1" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Anterior</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#ayudaCarousel1" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Siguiente</span>
+      </button>
+    </div>
+
+
+    <!-- 📲 Pago Móvil -->
+    <hr class="my-5">
+    <h3 class="text-center mb-4">📲 ¿Cómo pagar con Pago Móvil?</h3>
+
+    <div class="row mt-4">
+      <div class="col-md-6 mb-4">
+        <h5>1️⃣ Selecciona Pago Móvil</h5>
+        <p>Al finalizar tu compra, elige <strong>“Pago Móvil”</strong como método de pago en la app.</p>
+      </div>
+      <div class="col-md-6 mb-4">
+        <h5>2️⃣ Abre tu app bancaria</h5>
+        <p>Realiza el pago desde tu banco usando los datos de EL SAMBILITO.</p>
+      </div>
+      <div class="col-md-6 mb-4">
+        <h5>3️⃣ Usa estos datos</h5>
+        <p>
+          <strong>Banco:</strong> Banco de Venezuela<br>
+          <strong>Teléfono:</strong> 0426-1234567<br>
+          <strong>Cédula/RIF:</strong> V-12.345.678<br>
+          <strong>Nombre:</strong> EL SAMBILITO C.A.
+        </p>
+      </div>
+      <div class="col-md-6 mb-4">
+        <h5>4️⃣ Guarda el comprobante</h5>
+        <p>Haz una captura o anota el número de referencia del pago.</p>
+      </div>
+      <div class="col-md-6 mb-4">
+        <h5>5️⃣ Envíalo por WhatsApp</h5>
+        <p>Copia el numero de operacion, introducelo en la app en su respectiva casilla y envia el pedido.</p>
+      </div>
+      <div class="col-md-6 mb-4">
+        <h5>6️⃣ Espera confirmación</h5>
+        <p>Te avisaremos cuando tu pedido esté listo para retiro o entrega. ¡Gracias por tu compra!</p>
+      </div>
+    </div>
+
+    <!-- 🖼️ Carrusel de Pago Móvil -->
+    <div id="ayudaCarousel2" class="carousel slide mb-5" data-bs-ride="carousel">
+      <div class="carousel-inner rounded">
+        <div class="carousel-item active">
+          <img src="{% static 'imgs/carrusel_ayuda/Captura4.PNG' %}" class="d-block w-100" alt="Pago móvil paso 1">
+        </div>
+        <div class="carousel-item">
+          <img src="{% static 'imgs/carrusel_ayuda/Captura5.PNG' %}" class="d-block w-100" alt="Pago móvil paso 2">
+        </div>
+      </div>
+      <button class="carousel-control-prev" type="button" data-bs-target="#ayudaCarousel2" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Anterior</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#ayudaCarousel2" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Siguiente</span>
+      </button>
+    </div>
+
+    <!-- 💬 Mensaje final -->
+    <div class="text-center mt-4">
+      <p class="fw-bold">💬 ¿Tienes dudas sobre el pago? Escríbenos por WhatsApp. ¡Estamos para ayudarte!</p>
+      <a href="https://wa.me/584247726393" class="btn btn-success">
+              Escríbenos por WhatsApp <i class="bi bi-whatsapp ms-2"></i>
+            </a>
+    </div>
+
+  </div> <!-- ✅ cierre del contenedor blanco -->
+</div> <!-- ✅ cierre del container general -->
+{% endblock %}

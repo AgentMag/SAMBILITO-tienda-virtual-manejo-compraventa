@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container py-5">
+  <div class="p-4 rounded shadow-sm" style="background-color: white;">
+    <h2 class="mb-3 text-success">Pedido {{ pedido.codigo }}</h2>
+    <ul class="list-unstyled mb-4">
+      <li><strong>Usuario:</strong> {{ pedido.usuario.username }}</li>
+      <li><strong>Fecha:</strong> {{ pedido.fecha|date:"d/m/Y H:i" }}</li>
+      <li><strong>Monto:</strong> ${{ pedido.monto_usd }} / Bs {{ pedido.monto_bs }}</li>
+      <li><strong>Método de pago:</strong> {{ pedido.get_metodo_pago_display }}</li>
+      <li><strong>Entrega:</strong> {{ pedido.metodo_entrega }}</li>
+    </ul>
+
+    <h4 class="text-success">Productos:</h4>
+    <table class="table table-bordered table-hover bg-white">
+      <thead class="table-success">
+        <tr>
+          <th>Producto</th>
+          <th>Cantidad</th>
+          <th>Subtotal</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in items %}
+        <tr>
+          <td>{{ item.producto }}</td>
+          <td>{{ item.cantidad }}</td>
+          <td>${{ item.subtotal }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="3" class="text-center text-muted">No hay productos en este pedido.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <button class="btn btn-danger mt-3" onclick="anularPedido('{{ pedido.id }}')">
+      <i class="bi bi-x-circle"></i> Anular pedido
+    </button>
+
+
+    <a href="{% url 'historial_general_compras' %}" class="btn btn-secondary mt-3">← Volver al historial</a>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<script>
+async function anularPedido(idPedido) {
+  const confirmacion = confirm("¿Estás seguro de que deseas anular este pedido?");
+  if (!confirmacion) return;
+
+  try {
+    const csrfToken = "{{ csrf_token|escapejs }}";
+    const response = await axios({
+      method: "post",
+      url: "/anular-pedido/",
+      data: { idPedido },
+      headers: {
+        "X-CSRFToken": csrfToken,
+      },
+    });
+
+    if (response.data.resultado === 1) {
+      alert("Pedido anulado correctamente 🗑️");
+      window.location.href = "{% url 'historial_general_compras' %}";
+    } else {
+      alert("No se pudo anular el pedido 😓");
+    }
+  } catch (error) {
+    console.error("Error al anular pedido:", error);
+    alert("Error de conexión 😵");
+  }
+}
+</script>
+
+
+
+{% endblock %}
+
+

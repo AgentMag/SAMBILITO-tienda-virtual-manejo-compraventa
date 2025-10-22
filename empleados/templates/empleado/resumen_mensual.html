@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% block title %}Resumen de Ventas{% endblock %}
+{% load static %}
+{% block content %}
+{% block nav_visible %}{% endblock %}
+<nav class="navbar navbar-light bg-success py-2">
+  <div class="container d-flex justify-content-center">
+    <a class="navbar-brand" href="/">
+      <img src="{% static 'imgs/fotologo/fotosambilito.png' %}" alt="Logo Sambilito" style="height: 50px;">
+    </a>
+  </div>
+</nav>
+
+<!-- ✅ Contenido principal -->
+<div class="container py-4">
+  <div class="bg-white p-4 rounded shadow-sm">
+
+    <!-- 🎯 Filtro por año -->
+    <form method="get" class="mb-4 d-flex gap-2 align-items-center">
+      <label for="year" class="form-label mb-0">Filtrar por año:</label>
+      <select name="year" id="year" class="form-select w-auto">
+        {% for y in años_disponibles %}
+          <option value="{{ y }}" {% if y == año %}selected{% endif %}>{{ y }}</option>
+        {% endfor %}
+      </select>
+      <button type="submit" class="btn btn-primary">Filtrar</button>
+    </form>
+
+    <!-- 📊 Tabla de resumen -->
+    <div class="table-responsive mb-5">
+      <table class="table table-bordered text-center align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>Mes</th>
+            <th>Total USD</th>
+            <th>Tendencia</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in resumen %}
+          <tr>
+            <td>{{ item.mes }}</td>
+            <td>${{ item.total|floatformat:2 }}</td>
+            <td>
+              {% if item.tendencia == 'sube' %}
+                <span class="text-success">⬆ Crece</span>
+              {% elif item.tendencia == 'baja' %}
+                <span class="text-danger">⬇ Decrece</span>
+              {% elif item.tendencia == 'estable' %}
+                <span class="text-warning">→ Estable</span>
+              {% else %}
+                <span class="text-muted">—</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 📈 Gráfico de ventas -->
+    <h5 class="text-center mb-3">Gráfico de ventas mensuales</h5>
+    <canvas id="ventasChart" height="150"></canvas>
+
+    <!-- 🔙 Botón de regreso -->
+    <div class="text-center mt-4">
+      <a href="{% url 'historial_general_compras' %}" class="btn btn-secondary">
+        ← Volver al historial
+      </a>
+    </div>
+
+  </div>
+</div> <!-- ✅ cierre correcto del container -->
+
+<!-- 📦 Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const ctx = document.getElementById('ventasChart').getContext('2d');
+  const ventasChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: {{ labels|safe }},
+      datasets: [{
+        label: 'Ventas mensuales (USD)',
+        data: {{ totales|safe }},
+        borderColor: 'rgba(75, 192, 192, 1)',
+        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+        fill: true,
+        tension: 0.3
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+</script>
+{% endblock %}

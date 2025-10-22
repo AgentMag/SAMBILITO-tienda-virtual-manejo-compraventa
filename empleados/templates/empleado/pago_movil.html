@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block separador_footer %}{% endblock %}
+
+{% block title %}Registrar Empleado{% endblock %}
+
+{% load static %}
+{% block content %}
+{% block nav_visible %}{% endblock %}
+<nav class="navbar navbar-light bg-success py-2">
+  <div class="container d-flex justify-content-center">
+    <a class="navbar-brand" href="/">
+      <img src="{% static 'imgs/fotologo/fotosambilito.png' %}" alt="Logo Sambilito" style="height: 50px;">
+    </a>
+  </div>
+</nav>
+<div class="container py-0">
+  <div class="bg-white rounded-4 shadow p-4">
+    <div class="text-center mb-5">
+      <h4 class="card-title text-center mb-4 fw-bold">🧾 Detalles del Pedido</h4>
+
+      <!-- 🛒 Productos del Carrito -->
+      <div class="mb-5 mx-auto" style="max-width: 700px;">
+        <h5 class="fw-semibold mb-3 text-center">Productos</h5>
+        {% if request.session.carrito %}
+          <ul class="list-group">
+            {% for key, item in request.session.carrito.items %}
+              <li class="list-group-item d-flex justify-content-between align-items-center">
+                {{ item.nombre }} x{{ item.cantidad }}
+                <span class="badge bg-primary rounded-pill">${{ item.acumulado }}</span>
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p class="text-muted text-center">Tu carrito está vacío.</p>
+        {% endif %}
+      </div>
+
+      <!-- 💳 Resumen de Pago -->
+
+
+      
+      <div class="mb-5">
+        <h5 class="fw-semibold mb-3">Resumen de Pago</h5>
+        <div class="row text-center">
+          <div class="col-md-4 mb-3">
+            <div class="border rounded py-3 bg-light">
+              <h6 class="text-muted">💵 Total en dólares</h6>
+              <p class="fs-4 fw-semibold text-success">${{ pago_Movil.monto }}</p>
+            </div>
+          </div>
+          <div class="col-md-4 mb-3">
+            <div class="border rounded py-3 bg-light">
+              <h6 class="text-muted">🔄 Tasa actual</h6>
+              <p class="fs-4 fw-semibold text-warning">{{ tasa }}</p>
+            </div>
+          </div>
+          <div class="col-md-4 mb-3">
+            <div class="border rounded py-3 bg-light">
+              <h6 class="text-muted">💴 Total en bolívares</h6>
+              <p class="fs-4 fw-semibold text-danger">{{ total_ves }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 📤 Datos para Pago Móvil -->
+<div class="text-center">
+  <img src="{% static 'imgs/fotologo/logo.jpg' %}" alt="Pago Móvil" class="img-fluid mb-4" style="max-height: 100px;">
+  <h5 class="mb-4 fw-semibold">Datos para Pago Móvil</h5>
+</div>
+
+
+<div class="mx-auto" style="max-width: 500px;">
+  <div class="card shadow-sm mb-4">
+    <div class="card-body">
+
+      <div class="mb-3">
+        <label class="form-label fw-semibold">
+          <i class="bi bi-person-badge me-2"></i> Documento:
+        </label>
+        <div class="input-group">
+          <input type="text" id="documento" value="{{ pago_Movil.documento }}" readonly class="form-control">
+          <button class="btn btn-outline-secondary" onclick="copiar('documento')">📋 Copiar</button>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label fw-semibold">
+          <i class="bi bi-telephone me-2"></i> Teléfono:
+        </label>
+        <div class="input-group">
+          <input type="text" id="telefono" value="{{ pago_Movil.telefono }}" readonly class="form-control">
+          <button class="btn btn-outline-secondary" onclick="copiar('telefono')">📋 Copiar</button>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label fw-semibold">
+          <i class="bi bi-cash me-2"></i> Monto en Bs:
+        </label>
+        <div class="input-group">
+          <input type="text" id="monto" value="{{ total_ves }}" readonly class="form-control">
+          <button class="btn btn-outline-secondary" onclick="copiar('monto')">📋 Copiar</button>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label fw-semibold">
+          <i class="bi bi-chat-left-text me-2"></i> Concepto:
+        </label>
+        <div class="input-group">
+          <input type="text" id="concepto" value="{{ pago_Movil.concepto }}" readonly class="form-control">
+          <button class="btn btn-outline-secondary" onclick="copiar('concepto')">📋 Copiar</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+      <!-- ✅ Confirmar Pedido -->
+      <div class="mb-5 mx-auto" style="max-width: 400px;">
+        <h5 class="fw-semibold mb-3 text-center">Confirmar Pedido</h5>
+        <form id="whatsapp-form" onsubmit="enviarPedidoPagoMovil(event)">
+          {% csrf_token %}
+          <div class="mb-3">
+            <label for="codigo" class="form-label">🔐 Número de operación de tu pago móvil</label>
+            <input type="text" id="codigo" name="codigo" class="form-control form-control-lg" placeholder="Número de operación" required>
+          </div>
+          <div class="d-grid">
+            <button type="submit" class="btn btn-success btn-lg">Enviar pedido</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

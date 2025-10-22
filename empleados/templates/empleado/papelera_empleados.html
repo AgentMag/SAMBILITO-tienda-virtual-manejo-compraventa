@@ -1,0 +1,103 @@
+
+{% extends "base.html" %}
+{% block title %}Papelera{% endblock %}
+{% load static %}
+{% block content %}
+{% block nav_visible %}{% endblock %}
+
+<style>
+.fade-out {
+  opacity: 0;
+  transition: opacity 0.5s ease-out;
+}
+</style>
+
+
+<nav class="navbar navbar-light bg-success py-2">
+  <div class="container d-flex justify-content-center">
+    <a class="navbar-brand" href="/">
+      <img src="{% static 'imgs/fotologo/fotosambilito.png' %}" alt="Logo Sambilito" style="height: 50px;">
+    </a>
+  </div>
+</nav>
+
+<div class="container mt-4" style="padding-top: 40px; padding-bottom: 80px;">
+
+
+  <h3 class="text-center text-muted mb-4">🗑️ Productos desactivados</h3>
+  <div class="row gx-2 gy-3">
+    {% for empleado in empleados %}
+      <div class="col-md-4 mb-3 d-flex" id="empleado_{{ empleado.id }}">
+        <div class="card" style="width: 15rem;">
+          <img class="foto_empleado" src="{{ empleado.foto_empleado.url }}" alt="Foto de {{ empleado.nombre_empleado }}" />
+          <div class="card-body text-center">
+            <h5 class="text-muted">{{ empleado.nombre_empleado }}</h5>
+            <p class="descripcion-limitada text-muted">{{ empleado.apellido_empleado }}</p>
+            <h6 class="text-danger">Desactivado</h6>
+
+            <button class="btn btn-info" onclick="restaurarEmpleado('{{ empleado.id }}')">
+              <i class="bi bi-arrow-counterclockwise"></i> Restaurar
+            </button>
+          </div>
+        </div>
+      </div>
+    {% empty %}
+      <p class="text-center text-muted">No hay productos desactivados.</p>
+    {% endfor %}
+  </div>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+async function restaurarEmpleado(idEmpleado) {
+  const confirmation = confirm("¿Deseas restaurar este producto?");
+  if (confirmation) {
+    try {
+      const csrfToken = "{{ csrf_token|escapejs }}";
+      const response = await axios({
+        method: "post",
+        url: "/restaurar-empleado/",
+        data: { idEmpleado },
+        headers: {
+          "X-CSRFToken": csrfToken,
+        },
+      });
+
+      if (response.data.resultado === 1) {
+        alerta("Producto restaurado correctamente 💪", 1);
+
+        // Oculta el card sin recargar
+        const card = document.querySelector("#empleado_" + idEmpleado);
+        if (card) {
+        card.classList.add("fade-out");
+        setTimeout(() => {
+            card.remove();
+
+            // Verifica si ya no quedan productos después de eliminar
+            const cardsRestantes = document.querySelectorAll(".col-md-4.d-flex").length;
+            if (cardsRestantes === 0) {
+            document.querySelector(".row").innerHTML =
+                '<p class="text-center text-muted">No hay productos desactivados.</p>';
+            }
+        }, 500);
+        }
+
+
+        // Si ya no hay productos, muestra el mensaje vacío
+        if (document.querySelectorAll(".col-md-4.d-flex").length === 1) {
+          document.querySelector(".row").innerHTML =
+            '<p class="text-center text-muted">No hay productos desactivados.</p>';
+        }
+      } else {
+        alerta("No se pudo restaurar el producto 😓", 0);
+      }
+    } catch (error) {
+      console.error("Error al restaurar:", error);
+      alerta("Error de conexión 😵", 0);
+    }
+  }
+}
+</script>
+
+{% endblock %}

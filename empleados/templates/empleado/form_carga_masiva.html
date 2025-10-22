@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Carga masiva de empleados{% endblock %}
+
+{% block customCSS %}
+<link rel="stylesheet" href="{% static 'css/custom_file.css' %}">
+<link rel="stylesheet" href="{% static 'css/loading.css' %}">
+<style>
+  .input-file input[type="file"] {
+    display: none;
+  }
+  .input-file .file {
+    cursor: pointer;
+  }
+  .bg-panel {
+    background-color: #fff;
+    border-radius: 0.5rem;
+    box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    padding: 2rem;
+  }
+</style>
+{% endblock %}
+{% block content %}
+{% block nav_visible %}{% endblock %}
+<nav class="navbar navbar-light bg-success py-2">
+  <div class="container d-flex justify-content-center">
+    <a class="navbar-brand" href="/">
+      <img src="{% static 'imgs/fotologo/fotosambilito.png' %}" alt="Logo Sambilito" style="height: 50px;">
+    </a>
+  </div>
+</nav>
+<div class="container py-4">
+  <div class="bg-panel">
+
+    <!-- 🔄 Cargando -->
+    <div class="contentLoading" style="display: none;">
+      <div class="loading-overlay">
+        <span class="loader"></span>
+        <aside>Cargando, por favor espere...</aside>
+      </div>
+    </div>
+
+    <!-- 🧭 Encabezado -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <a href="{% url 'inicio' %}" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left-circle"></i> Volver
+      </a>
+      <h2 class="text-center flex-grow-1 text-uppercase m-0">Carga masiva de empleados</h2>
+  
+    </div>
+    <hr>
+
+    <!-- 📤 Formulario -->
+    <form id="formXLSX" method="post" enctype="multipart/form-data" action="{% url 'subir_data_xlsx' %}">
+      {% csrf_token %}
+      <div class="text-center mb-4">
+        <label class="input-file">
+          <span class="btn btn-primary file">
+            <i class="bi bi-file-earmark-zip"></i> Selecciona un archivo ZIP
+          </span>
+          <input type="file" name="archivo_zip" id="archivo_zip" class="fileInput verde" accept=".zip">
+        </label>
+      </div>
+
+      <div class="d-grid gap-2 col-6 mx-auto">
+        <button class="btn btn-success verde" type="submit">
+          Cargar ZIP <i class="bi bi-upload"></i>
+        </button>
+      </div>
+    </form>
+
+    <!-- 📢 Respuesta -->
+    <div id="respuesta" class="mt-4"></div>
+
+  </div>
+</div>
+
+<!-- 🧠 Script de carga -->
+<script>
+document.getElementById('formXLSX').addEventListener('submit', function (e) {
+  e.preventDefault();
+
+  const archivo = document.getElementById('archivo_zip').files[0];
+  if (!archivo || !archivo.name.endsWith('.zip')) {
+    respuesta.innerHTML = `<div class="alert alert-warning">Por favor selecciona un archivo .zip válido.</div>`;
+    return;
+  }
+
+  document.querySelector('.contentLoading').style.display = 'block';
+  const formData = new FormData(this);
+
+  fetch("{% url 'subir_data_xlsx' %}", {
+    method: 'POST',
+    headers: {
+      'X-CSRFToken': '{{ csrf_token }}'
+    },
+    body: formData
+  })
+  .then(response => response.json())
+  .then(data => {
+    document.querySelector('.contentLoading').style.display = 'none';
+
+    const tipo = data.status_server === 'success' ? 'success' :
+                 data.status_server === 'partial' ? 'warning' : 'danger';
+
+    let mensaje = `<div class="alert alert-${tipo}">${data.message}</div>`;
+
+    if (data.errores && Array.isArray(data.errores)) {
+      mensaje += `<ul class="list-group mt-2">`;
+      data.errores.forEach(error => {
+        mensaje += `<li class="list-group-item list-group-item-danger">${error}</li>`;
+      });
+      mensaje += `</ul>`;
+    }
+
+    respuesta.innerHTML = mensaje;
+  })
+  .catch(error => {
+    document.querySelector('.contentLoading').style.display = 'none';
+    respuesta.innerHTML = `<div class="alert alert-danger">Error inesperado: ${error}</div>`;
+  });
+});
+</script>
+{% endblock %}
+
+{% block customJS %}
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="{% static 'js/custom_file.js' %}"></script>
+<script src="{% static 'js/process_carga_masiva.js' %}"></script>
+{% endblock %}
+
+

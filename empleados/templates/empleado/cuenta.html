@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container px-4 py-5" style="max-width: 800px;">
+  <h2 class="mb-4 text-primary fw-bold">
+    <i class="bi bi-person-badge me-2"></i> Información de la cuenta
+  </h2>
+
+  <!-- 👤 Datos actuales -->
+  <div class="card shadow-sm border-0 mb-4" style="border-radius: 20px;">
+    <div class="card-body px-5 py-4">
+      <p class="mb-3"><strong>Nombre de usuario actual:</strong> {{ user.username }}</p>
+      <p class="mb-3"><strong>Correo electrónico actual:</strong> {{ user.email }}</p>
+      <p><strong>Contraseña:</strong> ********</p>
+    </div>
+  </div>
+
+  <!-- ✏️ Actualizar nombre de usuario -->
+  <div class="card shadow-sm border-0 mb-4" style="border-radius: 20px;">
+    <div class="card-header bg-success text-white fw-semibold">
+      <i class="bi bi-pencil-square me-2"></i> Actualizar nombre de usuario
+    </div>
+    <div class="card-body px-5 py-4">
+      <form method="post">
+        {% csrf_token %}
+        {{ username_form|crispy }}
+        <div class="text-end mt-4">
+          <button type="submit" name="update_username" class="btn btn-success btn-lg">
+            Guardar usuario
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 📧 Actualizar correo electrónico -->
+  <div class="card shadow-sm border-0 mb-4" style="border-radius: 20px;">
+    <div class="card-header bg-info text-white fw-semibold">
+      <i class="bi bi-envelope me-2"></i> Actualizar correo electrónico
+    </div>
+    <div class="card-body px-5 py-4">
+      <form method="post">
+        {% csrf_token %}
+        {{ email_form|crispy }}
+        <div class="text-end mt-4">
+          <button type="submit" name="update_email" class="btn btn-info btn-lg">
+            Guardar correo
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 🔒 Cambiar contraseña -->
+  <div class="card shadow-sm border-0 mb-4" style="border-radius: 20px;">
+    <div class="card-header bg-warning text-dark fw-semibold">
+      <i class="bi bi-shield-lock me-2"></i> Cambiar contraseña
+    </div>
+    <div class="card-body px-5 py-4">
+      <form method="post">
+        {% csrf_token %}
+        {{ password_form|crispy }}
+        <div class="text-end mt-4">
+          <button type="submit" name="update_password" class="btn btn-warning btn-lg">
+            Guardar contraseña
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+
+{% endblock %}

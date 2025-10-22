@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block content %}
+{%load static%}
+{% block nav_visible %}{% endblock %}
+  <nav class="navbar navbar-light bg-success py-2">
+    <div class="container d-flex justify-content-center">
+      <a class="navbar-brand" href="/">
+        <img src="{% static 'imgs/fotologo/fotosambilito.png' %}" alt="Logo Sambilito" style="height: 50px;">
+      </a>
+    </div>
+  </nav>
+<div class="container-fluid px-4 py-3">
+
+<h2 class="text-center mb-3">📦 Resumen de pedidos del mes</h2>
+
+
+<div class="row justify-content-center mb-4">
+  <div class="col-auto">
+    <a href="{% url 'exportar_excel' %}?month={{ selected_month }}" class="btn btn-outline-success">
+      📥 Exportar a Excel
+    </a>
+  </div>
+  <div class="col-auto">
+    <a href="{% url 'resumen_mensual_ventas' %}" class="btn btn-outline-primary">
+      📈 Resumen mensual
+    </a>
+  </div>
+  <div class="col-auto">
+    <a href="{% url 'ranking_usuarios' %}" class="btn btn-outline-warning">
+      🏅 Ranking de compradores
+    </a>
+  </div>
+  <div class="col-auto">
+    <a href="{% url 'ranking_productos' %}" class="btn btn-outline-danger">
+      📊 Ranking de productos
+    </a>
+  </div>
+  <div class="col-auto">
+    <a href="{% url 'productos_alerta' %}" class="btn btn-outline-dark">
+      ⚠️ Productos en alerta
+    </a>
+  </div>
+</div>
+
+
+
+  <hr />
+
+
+
+  <div class="table-responsive">
+    <table class="table table-bordered table-hover align-middle bg-white">
+
+      <thead class="table-primary">
+        <tr>
+          <th>Usuario</th>
+          <th>Código</th>
+          <th>Fecha</th>
+          <th>Monto USD</th>
+          <th>Monto Bs</th>
+          <th>Tasa</th>
+          <th>Método de Pago</th>
+          <th>Entrega</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for pedido in pedidos %}
+        <tr onclick="window.location.href='{% url 'pedido_detalle' pedido.pk %}'" style="cursor:pointer;" title="Ver detalle del pedido">
+
+          <td>{{ pedido.usuario.username }}</td>
+          <td>{{ pedido.codigo }}</td>
+          <td>{{ pedido.fecha|date:"d/m/Y H:i" }}</td>
+          <td>${{ pedido.monto_usd }}</td>
+          <td>{{ pedido.monto_bs }}</td>
+          <td>{{ pedido.tasa }}</td>
+          <td>{{ pedido.get_metodo_pago_display }}</td>
+          <td>{{ pedido.metodo_entrega }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+
+    </table>
+  </div>
+</div>
+
+
+{% endblock %}
